@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turning Pages - Online Bookstore</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #fdfdfd;
+            color: #333;
+            animation: fadeInBody 1s ease-in;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        @keyframes fadeInBody {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        header {
+            background-color: #2d1918;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+        }
+
+        nav a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffcccb;
+        }
+
+        .hero {
+            background: url('https://source.unsplash.com/1600x600/?books') no-repeat center center/cover;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            animation: fadeInHero 1.2s ease-in;
+        }
+
+        @keyframes fadeInHero {
+            from {
+                opacity: 0;
+                transform: scale(1.05);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hero h2 {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 2.5rem;
+            animation: fadeText 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes fadeText {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0.6;
+            }
+        }
+
+        .section {
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .search-bar input,
+        .category-filter select {
+            padding: 10px;
+            margin: 10px;
+            width: 250px;
+            max-width: 80%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: box-shadow 0.3s;
+        }
+
+        .search-bar input:focus,
+        .category-filter select:focus {
+            box-shadow: 0 0 5px rgba(45, 25, 24, 0.5);
+            outline: none;
+        }
+
+        .books {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            justify-content: center;
+            justify-items: center;
+            gap: 20px;
+            animation: fadeInBooks 0.8s ease-in;
+        }
+
+        @keyframes fadeInBooks {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .book-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInBookCard 0.5s ease-in;
+        }
+
+        @keyframes fadeInBookCard {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .book-card h4 {
+            margin: 10px 0 5px;
+            font-size: 1.1rem;
+        }
+
+        .book-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .wishlist-btn {
+            margin-top: 8px;
+            padding: 6px 10px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .wishlist-btn:hover {
+            background: #e65050;
+        }
+
+        .go-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2d1918;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            animation: bounceTopBtn 2s infinite;
+        }
+
+        @keyframes bounceTopBtn {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .go-top:hover {
+            background: #4e2e2c;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            animation: fadeInModal 0.5s ease;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 10px;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 10px;
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-content ul li {
+            margin-bottom: 5px;
+        }
+
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            color: #888;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #000;
+        }
+
+        footer {
+            background: #2d1918;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            animation: fadeInFooter 1s ease;
+        }
+
+        @keyframes fadeInFooter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .books {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .pagination-controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .pagination-controls button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #2d1918;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .pagination-controls button:hover {
+            background-color: #4e2e2c;
+        }
+
+        .books {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            justify-items: center;
+            animation: fadeInBooks 0.8s ease-in;
+        }
+
+        @media (max-width: 1024px) {
+            .books {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .books {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>TURNING PAGES</h1>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#books">Books</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+    <section class="hero" id="home">
+        <h2>Discover Your Next Favorite Book</h2>
+    </section>
+    <section class="section" id="books">
+        <h3>Featured Books</h3>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search books...">
+        </div>
+        <div class="category-filter">
+            <select id="categorySelect">
+                <option value="all">All Categories</option>
+                <option value="Fiction">Fiction</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Self-help">Self-help</option>
+                <option value="Biography">Biography</option>
+                <option value="Romance">Romance</option>
+                <option value="Thriller">Thriller</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <button onclick="showWishlistModal()">📚 View Wishlist</button>
+        </div>
+        <div class="books" id="bookList">
+            <div class="books" id="bookList">
+                <div class="book-card" data-category="Fiction">
+                    <img src="The Great gatsby.jpg" alt="The Great Gatsby">
+                    <h4>The Great Gatsby</h4>
+                    <p>by F. Scott Fitzgerald</p>
+                    <p>⭐ 4.5 / 5</p>
+                    <p>₹299</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="To kill a mocking bird.jpg" alt="To Kill a Mockingbird">
+                    <h4>To Kill a Mockingbird</h4>
+                    <p>by Harper Lee</p>
+                    <p>⭐ 4.6 / 5</p>
+                    <p>₹349</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fantasy">
+                    <img src="Harry Potter.jpg" alt="Harry Potter">
+                    <h4>Harry Potter</h4>
+                    <p>by J.K. Rowling</p>
+                    <p>⭐ 4.8 / 5</p>
+                    <p>₹499</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Self-help">
+                    <img src="Atomic habits.jpg" alt="Atomic Habits">
+                    <h4>Atomic Habits</h4>
+                    <p>by James Clear</p>
+                    <p>⭐ 4.7 / 5</p>
+                    <p>₹399</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Self-help">
+                    <img src="The pyschology of money.jpg" alt="The Psychology of Money">
+                    <h4>The Psychology of Money</h4>
+                    <p>by Morgan Housel</p>
+                    <p>⭐ 4.6 / 5</p>
+                    <p>₹349</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Biography">
+                    <img src="becoming.jpg" alt="Becoming">
+                    <h4>Becoming</h4>
+                    <p>by Michelle Obama</p>
+                    <p>⭐ 4.7 / 5</p>
+                    <p>₹479</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Romance">
+                    <img src="It ends with us.jpg" alt="It Ends With Us">
+                    <h4>It Ends With Us</h4>
+                    <p>by Colleen Hoover</p>
+                    <p>⭐ 4.4 / 5</p>
+                    <p>₹329</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="The book thief.jpg" alt="The Book Thief">
+                    <h4>The Book Thief</h4>
+                    <p>by Markus Zusak</p>
+                    <p>⭐ 4.5 / 5</p>
+                    <p>₹399</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Self-help">
+                    <img src="Ikigai.jpg" alt="Ikigai">
+                    <h4>Ikigai</h4>
+                    <p>by Héctor García & Francesc Miralles</p>
+                    <p>⭐ 4.3 / 5</p>
+                    <p>₹299</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fantasy">
+                    <img src="The chronicles of Narnia.jpg" alt="The Chronicles of Narnia">
+                    <h4>The Chronicles of Narnia</h4>
+                    <p>by C.S. Lewis</p>
+                    <p>⭐ 4.6 / 5</p>
+                    <p>₹459</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Thriller">
+                    <img src="The midnight library.jpg" alt="The Midnight Library">
+                    <h4>The Midnight Library</h4>
+                    <p>by Matt Haig</p>
+                    <p>⭐ 4.2 / 5</p>
+                    <p>₹379</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fantasy">
+                    <img src="The atlas six.jpg" alt="The Atlas Six">
+                    <h4>The Atlas Six</h4>
+                    <p>by Olivie Blake</p>
+                    <p>⭐ 4.1 / 5</p>
+                    <p>₹499</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="GeorgeOrwell.jpg" alt="1984">
+                    <h4>1984</h4>
+                    <p>by George Orwell</p>
+                    <p>⭐ 4.7 / 5</p>
+                    <p>₹289</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fantasy">
+                    <img src="The hobbit.jpg" alt="The Hobbit">
+                    <h4>The Hobbit</h4>
+                    <p>by J.R.R. Tolkien</p>
+                    <p>⭐ 4.8 / 5</p>
+                    <p>₹399</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Biography">
+                    <img src="Steve Jobs.jpg" alt="Steve Jobs">
+                    <h4>Steve Jobs</h4>
+                    <p>by Walter Isaacson</p>
+                    <p>⭐ 4.5 / 5</p>
+                    <p>₹459</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Romance">
+                    <img src="Verity.jpg" alt="Verity">
+                    <h4>Verity</h4>
+                    <p>by Colleen Hoover</p>
+                    <p>⭐ 4.3 / 5</p>
+                    <p>₹349</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Romance">
+                    <img src="Reminders of him.jpg" alt="Reminders of Him">
+                    <h4>Reminders of Him</h4>
+                    <p>by Colleen Hoover</p>
+                    <p>⭐ 4.2 / 5</p>
+                    <p>₹329</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Romance">
+                    <img src="Ugly book.jpg" alt="Ugly Love">
+                    <h4>Ugly Love</h4>
+                    <p>by Colleen Hoover</p>
+                    <p>⭐ 4.1 / 5</p>
+                    <p>₹319</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Romance">
+                    <img src="November9.jpg" alt="November 9">
+                    <h4>November 9</h4>
+                    <p>by Colleen Hoover</p>
+                    <p>⭐ 4.0 / 5</p>
+                    <p>₹299</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fantasy">
+                    <img src="A court of thorns and rose.jpg" alt="A Court of Thorns and Roses">
+                    <h4>A Court of Thorns and Roses</h4>
+                    <p>by Sarah J. Maas</p>
+                    <p>⭐ 4.6 / 5</p>
+                    <p>₹479</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Biography">
+                    <img src="Long walk to freedom.jpg" alt="Long Walk to Freedom">
+                    <h4>Long Walk to Freedom</h4>
+                    <p>by Nelson Mandela</p>
+                    <p>⭐ 4.8 / 5</p>
+                    <p>₹449</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Self-help">
+                    <img src="Before the coffee gets cold.jpg" alt="Before the Coffee Gets Cold">
+                    <h4>Before the Coffee Gets Cold</h4>
+                    <p>by Toshikazu Kawaguchi</p>
+                    <p>⭐ 4.2 / 5</p>
+                    <p>₹289</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Self-help">
+                    <img src="Brida.jpg" alt="Brida">
+                    <h4>Brida</h4>
+                    <p>by Paulo Coelho</p>
+                    <p>⭐ 4.0 / 5</p>
+                    <p>₹309</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Self-help">
+                    <img src="Sapiens.jpg" alt="Sapiens">
+                    <h4>Sapiens</h4>
+                    <p>by Yuval Noah Harari</p>
+                    <p>⭐ 4.7 / 5</p>
+                    <p>₹549</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Biography">
+                    <img src="Educated.jpg" alt="Educated">
+                    <h4>Educated</h4>
+                    <p>by Tara Westover</p>
+                    <p>⭐ 4.6 / 5</p>
+                    <p>₹399</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="Where the crawdads sing.jpg" alt="Where the Crawdads Sing">
+                    <h4>Where the Crawdads Sing</h4>
+                    <p>by Delia Owens</p>
+                    <p>⭐ 4.5 / 5</p>
+                    <p>₹359</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="The silent patient.jpg" alt="The Silent Patient">
+                    <h4>The Silent Patient</h4>
+                    <p>by Alex Michaelides</p>
+                    <p>⭐ 4.3 / 5</p>
+                    <p>₹329</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Thriller">
+                    <img src="The girl on the train.jpg" alt="The Girl on the Train">
+                    <h4>The Girl on the Train</h4>
+                    <p>by Paula Hawkins</p>
+                    <p>⭐ 4.1 / 5</p>
+                    <p>₹299</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Thriller">
+                    <img src="Gone girl.jpg" alt="Gone Girl">
+                    <h4>Gone Girl</h4>
+                    <p>by Gillian Flynn</p>
+                    <p>⭐ 4.4 / 5</p>
+                    <p>₹379</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fantasy">
+                    <img src="Throne of glass.jpg" alt="Throne of Glass">
+                    <h4>Throne of Glass</h4>
+                    <p>by Sarah J. Maas</p>
+                    <p>⭐ 4.5 / 5</p>
+                    <p>₹399</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Biography">
+                    <img src="Wings of fire.jpg" alt="Wings of Fire">
+                    <h4>Wings of Fire</h4>
+                    <p>by A.P.J. Abdul Kalam</p>
+                    <p>⭐ 4.6 / 5</p>
+                    <p>₹249</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="Eleanor.jpg" alt="Eleanor Oliphant is Completely Fine">
+                    <h4>Eleanor Oliphant is Completely Fine</h4>
+                    <p>by Gail Honeyman</p>
+                    <p>⭐ 4.3 / 5</p>
+                    <p>₹349</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Thriller">
+                    <img src="The Da vinci Code.jpg" alt="The Da Vinci Code">
+                    <h4>The Da Vinci Code</h4>
+                    <p>by Dan Brown</p>
+                    <p>⭐ 4.5 / 5</p>
+                    <p>₹389</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="The Alchemist.jpg" alt="The Alchemist">
+                    <h4>The Alchemist</h4>
+                    <p>by Paulo Coelho</p>
+                    <p>⭐ 4.4 / 5</p>
+                    <p>₹299</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Romance">
+                    <img src="The love Hypothesis.jpg" alt="The Love Hypothesis">
+                    <h4>The Love Hypothesis</h4>
+                    <p>by Ali Hazelwood</p>
+                    <p>⭐ 4.3 / 5</p>
+                    <p>₹359</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fiction">
+                    <img src="The kite runner.jpg" alt="The Kite Runner">
+                    <h4>The Kite Runner</h4>
+                    <p>by Khaled Hosseini</p>
+                    <p>⭐ 4.6 / 5</p>
+                    <p>₹379</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Self-help">
+                    <img src="Deep work.jpg" alt="Deep Work">
+                    <h4>Deep Work</h4>
+                    <p>by Cal Newport</p>
+                    <p>⭐ 4.4 / 5</p>
+                    <p>₹399</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Thriller">
+                    <img src="Behind closed doors.jpg" alt="Behind Closed Doors">
+                    <h4>Behind Closed Doors</h4>
+                    <p>by B.A. Paris</p>
+                    <p>⭐ 4.1 / 5</p>
+                    <p>₹319</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Fantasy">
+                    <img src="Shadow and Bone.jpg" alt="Shadow and Bone">
+                    <h4>Shadow and Bone</h4>
+                    <p>by Leigh Bardugo</p>
+                    <p>⭐ 4.3 / 5</p>
+                    <p>₹339</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+                <div class="book-card" data-category="Biography">
+                    <img src="I am malala.jpg" alt="I Am Malala">
+                    <h4>I Am Malala</h4>
+                    <p>by Malala Yousafzai</p>
+                    <p>⭐ 4.5 / 5</p>
+                    <p>₹359</p>
+                    <button class="wishlist-btn">❤ Add to Wishlist</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="pagination-controls">
+            <div class="books" id="bookList">
+                <div id="paginated-books"></div>
+            </div>
+
+            <div class="pagination-controls">
+                <button id="prevPage">⬅ Previous</button>
+                <span id="pageIndicator"></span>
+                <button id="nextPage">Next ➡</button>
+            </div>
+        </div>
+        <button class="go-top" onclick="goToTop()">TOP</button>
+    </section>
+    <section class="contact" id="contact">
+        <h3>Contact Us</h3>
+        <p>Email: turningpages@gmail.com</p>
+        <p>Phone: +91 6369538394</p>
+    </section>
+    <footer>
+        <p>&copy; 2025 Turning Pages. All rights reserved.</p>
+    </footer>
+
+    <!-- Wishlist Modal -->
+    <div class="modal" id="wishlistModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeWishlistModal()">&times;</span>
+            <h3>Your Wishlist</h3>
+            <ul id="wishlistItems"></ul>
+        </div>
+    </div>
+
+    <script>
+        const bookData = [
+            {
+                title: "The Great Gatsby",
+                author: "F. Scott Fitzgerald",
+                category: "Fiction",
+                rating: "4.5",
+                price: "₹299",
+                image: "The Great gatsby.jpg"
+            },
+            {
+                title: "To Kill a Mockingbird",
+                author: "Harper Lee",
+                category: "Fiction",
+                rating: "4.6",
+                price: "₹349",
+                image: "To kill a mocking bird.jpg"
+            },
+            {
+                title: "Harry Potter",
+                author: "J.K. Rowling",
+                category: "Fantasy",
+                rating: "4.8",
+                price: "₹499",
+                image: "Harry Potter.jpg"
+            },
+            {
+                title: "Atomic Habits",
+                author: "James Clear",
+                category: "Self-help",
+                rating: "4.7",
+                price: "₹399",
+                image: "Atomic habits.jpg"
+            },
+            {
+                title: "The psychology of Money",
+                author: "Morgan Housel",
+                category: "Self-help",
+                rating: "4.6",
+                price: "₹349",
+                image: "The pyschology of money.jpg"
+            },
+            {
+                title: "Becoming",
+                author: "Michelle Obama",
+                category: "Biography",
+                rating: "4.7",
+                price: "₹479",
+                image: "becoming.jpg"
+            },
+            {
+                title: "It Ends With Us",
+                author: "Colleen Hoover",
+                category: "Romance",
+                rating: "4.4",
+                price: "₹329",
+                image: "It ends with us.jpg"
+            },
+            {
+                title: "The Book Theif",
+                author: "Markus Zusak",
+                category: "Fiction",
+                rating: "4.5",
+                price: "₹399",
+                image: "The book thief.jpg"
+            },
+            {
+                title: "Ikigai",
+                author: "Héctor García & Francesc Miralles",
+                category: "Self-help",
+                rating: "4.3",
+                price: "₹299",
+                image: "Ikigai.jpg"
+            },
+            {
+                title: "The Chronicles of Narnia",
+                author: "C.S. Lewis",
+                category: "Fantasy",
+                rating: "4.6",
+                price: "₹459",
+                image: "The chronicles of Narnia.jpg"
+            },
+            {
+                title: "The Midnight Library",
+                author: "Matt Haig",
+                category: "Thriller",
+                rating: "4.2",
+                price: "₹379",
+                image: "The midnight library.jpg"
+            },
+            {
+                title: "The Atlas Six",
+                author: "Olivie Blake",
+                category: "Fantasy",
+                rating: "4.1",
+                price: "₹499",
+                image: "The atlas six.jpg"
+            },
+            {
+                title: "1984",
+                author: "George Orwell",
+                category: "Fiction",
+                rating: "4.7",
+                price: "₹289",
+                image: "GeorgeOrwell.jpg"
+            },
+            {
+                title: "The Hobbit",
+                author: "J.R.R. Tolkien",
+                category: "Fantasy",
+                rating: "4.8",
+                price: "₹399",
+                image: "The hobbit.jpg"
+            },
+            {
+                title: "Steve Jobs",
+                author: "Walter Isaacson",
+                category: "Biography",
+                rating: "4.5",
+                price: "₹459",
+                image: "Steve Jobs.jpg"
+            },
+            {
+                title: "Verity",
+                author: "Colleen Hoover",
+                category: "Romance",
+                rating: "4.3",
+                price: "₹349",
+                image: "Verity.jpg"
+            },
+            {
+                title: "Reminders of Him",
+                author: "Colleen Hoover",
+                category: "Romance",
+                rating: "4.2",
+                price: "₹329",
+                image: "Reminders of him.jpg"
+            },
+            {
+                title: "Ugly Love",
+                author: "Colleen Hoover",
+                category: "Romance",
+                rating: "4.1",
+                price: "₹319",
+                image: "Ugly book.jpg"
+            },
+            {
+                title: "November 9",
+                author: "Colleen Hoover",
+                category: "Romance",
+                rating: "4.0",
+                price: "₹299",
+                image: "November9.jpg"
+            },
+            {
+                title: "A Court of Thorns and Roses",
+                author: "Sarah J. Maas",
+                category: "Fantasy",
+                rating: "4.6",
+                price: "₹479",
+                image: "A court of thorns and rose.jpg"
+            },
+            {
+                title: "Long Walk to Freedom",
+                author: "Nelson Mandela",
+                category: "Biography",
+                rating: "4.8",
+                price: "₹499",
+                image: "Long walk to freedom.jpg"
+            },
+            {
+                title: "Before the Coffee Gets Cold",
+                author: "Toshikazu Kawaguchi",
+                category: "Self-help",
+                rating: "4.2",
+                price: "₹289",
+                image: "Before the coffee gets cold.jpg"
+            },
+            {
+                title: "Brida",
+                author: "Paulo Coelho",
+                category: "Self-help",
+                rating: "4.0",
+                price: "₹309",
+                image: "Brida.jpg"
+            },
+            {
+                title: "Sapiens",
+                author: "Yuval Noah Harari",
+                category: "Self-help",
+                rating: "4.7",
+                price: "₹549",
+                image: "Sapiens.jpg"
+            },
+            {
+                title: "Educated",
+                author: "Tara Westover",
+                category: "Biography",
+                rating: "4.6",
+                price: "₹399",
+                image: "Educated.jpg"
+            },
+            {
+                title: "Where the Crawdads Sing",
+                author: "Delia Owens",
+                category: "Romance",
+                rating: "4.5",
+                price: "₹359",
+                image: "Where the crawdads sing.jpg"
+            },
+            {
+                title: "The Silent Patient",
+                author: "Alex Michaelides",
+                category: "Fiction",
+                rating: "4.3",
+                price: "₹329",
+                image: "The silent patient.jpg"
+            },
+            {
+                title: "The Girl on the Train",
+                author: "Paula Hawkins",
+                category: "Thriller",
+                rating: "4.1",
+                price: "₹299",
+                image: "The girl on the train.jpg"
+            },
+            {
+                title: "Gone Girl",
+                author: "Gillian Flynn",
+                category: "Thriller",
+                rating: "4.4",
+                price: "₹379",
+                image: "Gone girl.jpg"
+            },
+            {
+                title: "Throne of Glass",
+                author: "Sarah J. Mass",
+                category: "Fantasy",
+                rating: "4.5",
+                price: "₹399",
+                image: "Throne of glass.jpg"
+            },
+            {
+                title: "Wing of Fire",
+                author: "A.P.J. Abdul Kalam",
+                category: "Biography",
+                rating: "4.6",
+                price: "₹249",
+                image: "Wings of fire.jpg"
+            },
+            {
+                title: "Eleanor Oliphant is Completely Fine",
+                author: "Gail Honeyman",
+                category: "Fiction",
+                rating: "4.3",
+                price: "₹349",
+                image: "Eleanor.jpg"
+            },
+            {
+                title: "The Da Vinci Code",
+                author: "Dan Brown",
+                category: "Thriller",
+                rating: "4.5",
+                price: "₹389",
+                image: "The Da vinci Code.jpg"
+            },
+            {
+                title: "The Alchemist",
+                author: "Paulo Coelho",
+                category: "Fiction",
+                rating: "4.4",
+                price: "₹299",
+                image: "The Alchemist.jpg"
+            },
+            {
+                title: "The Love Hypothesis",
+                author: "Ali Hazelwood",
+                category: "Romance",
+                rating: "4.3",
+                price: "₹359",
+                image: "The love Hypothesis.jpg"
+            },
+            {
+                title: "The Kite Runner",
+                author: "Khaled Hosseini",
+                category: "Fiction",
+                rating: "4.6",
+                price: "₹379",
+                image: "The kite runner.jpg"
+            },
+            {
+                title: "Deep Work",
+                author: "Cal Newport",
+                category: "Self-help",
+                rating: "4.4",
+                price: "₹399",
+                image: "Deep work.jpg"
+            },
+            {
+                title: "Behind Closed Doors",
+                author: "B.A. Paris",
+                category: "Thriller",
+                rating: "4.1",
+                price: "₹319",
+                image: "Behind closed doors.jpg"
+            },
+            {
+                title: "Shadow and Bone",
+                author: "Leigh Bardugo",
+                category: "Fantasy",
+                rating: "4.3",
+                price: "₹339",
+                image: "Shadow and Bone.jpg"
+            },
+            {
+                title: "I am Malala",
+                author: "Malala Yousafzai",
+                category: "Biography",
+                rating: "4.5",
+                price: "₹359",
+                image: "I am malala.jpg"
+            }
+        ];
+        let currentPage = 1;
+        const booksPerPage = 8;
+
+        const bookList = document.getElementById("bookList");
+        const searchInput = document.getElementById("searchInput");
+        const categorySelect = document.getElementById("categorySelect");
+        const prevBtn = document.getElementById("prevPage");
+        const nextBtn = document.getElementById("nextPage");
+        const pageIndicator = document.getElementById("pageIndicator");
+
+        function renderBooks() {
+            const search = searchInput.value.toLowerCase();
+            const category = categorySelect.value;
+
+            let filteredBooks = bookData.filter(book => {
+                return (
+                    (category === "all" || book.category === category) &&
+                    book.title.toLowerCase().includes(search)
+                );
+            });
+
+            const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+            if (currentPage > totalPages) currentPage = 1;
+            const start = (currentPage - 1) * booksPerPage;
+            const end = start + booksPerPage;
+
+            bookList.innerHTML = "";
+            filteredBooks.slice(start, end).forEach(book => {
+                const card = document.createElement("div");
+                card.className = "book-card";
+                card.dataset.category = book.category;
+                card.innerHTML = `
+          <img src="${book.image}" alt="${book.title}">
+          <h4>${book.title}</h4>
+          <p>by ${book.author}</p>
+          <p>⭐ ${book.rating} / 5</p>
+          <p>${book.price}</p>
+          <button class="wishlist-btn" onclick="toggleWishlist('${book.title}')">❤ Add to Wishlist</button>
+        `;
+                bookList.appendChild(card);
+            });
+
+            pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+        }
+
+        function toggleWishlist(title) {
+            let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+            if (wishlist.includes(title)) {
+                wishlist = wishlist.filter(item => item !== title);
+            } else {
+                wishlist.push(title);
+            }
+            localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        }
+
+        function showWishlistModal() {
+            const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+            const list = document.getElementById("wishlistItems");
+            list.innerHTML = wishlist.length ? wishlist.map(item => `<li>${item}</li>`).join('') : '<li>No items in wishlist.</li>';
+            document.getElementById("wishlistModal").style.display = "flex";
+        }
+
+        function closeWishlistModal() {
+            document.getElementById("wishlistModal").style.display = "none";
+        }
+
+        function goToTop() {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        window.addEventListener("scroll", () => {
+            document.querySelector(".go-top").style.display = window.scrollY > 200 ? "block" : "none";
+        });
+
+        prevBtn.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderBooks();
+            }
+        });
+
+        nextBtn.addEventListener("click", () => {
+            currentPage++;
+            renderBooks();
+        });
+
+        searchInput.addEventListener("input", () => {
+            currentPage = 1;
+            renderBooks();
+        });
+
+        categorySelect.addEventListener("change", () => {
+            currentPage = 1;
+            renderBooks();
+        });
+
+        document.addEventListener("DOMContentLoaded", renderBooks);
+    </script>
+</body>
+
+</html>
